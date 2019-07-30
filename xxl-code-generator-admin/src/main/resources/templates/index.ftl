@@ -32,7 +32,8 @@
                         <div class="box box-default">
                             <div class="box-header with-border">
                                 <h4 class="pull-left">表结构信息</h4>
-                                <button type="button" class="btn btn-default btn-xs pull-right" id="codeGenerate" >生成代码</button>
+                                <button type="button" class="btn btn-default btn-xs pull-right" onclick="codeGenerateFunc(1)" id="codeGenerate" >生成代码</button>
+                                <button type="button" class="btn btn-default btn-xs pull-right"  onclick="codeGenerateFunc(2)" id="codeGenerate2" >生成代码（tkMapper）</button>
                             </div>
                             <div class="box-body">
                                 <ul class="chart-legend clearfix">

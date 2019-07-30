@@ -6,10 +6,10 @@ import java.util.List;
 /**
 * ${classInfo.classComment}
 *
-* Created by xuxueli on '${.now?string('yyyy-MM-dd HH:mm:ss')}'.
+* Created by ericer on '${.now?string('yyyy-MM-dd HH:mm:ss')}'.
 */
 @Component
-public interface ${classInfo.className}Dao {
+public interface ${classInfo.className}Mapper {
 
     /**
     * 新增

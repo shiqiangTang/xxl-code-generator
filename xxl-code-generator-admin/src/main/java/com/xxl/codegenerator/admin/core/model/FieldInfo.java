@@ -11,6 +11,7 @@ public class FieldInfo {
     private String fieldName;
     private String fieldClass;
     private String fieldComment;
+    private String fieldJdbcType;
 
     public String getColumnName() {
         return columnName;
@@ -44,4 +45,11 @@ public class FieldInfo {
         this.fieldComment = fieldComment;
     }
 
+    public String getFieldJdbcType() {
+        return fieldJdbcType;
+    }
+
+    public void setFieldJdbcType(String fieldJdbcType) {
+        this.fieldJdbcType = fieldJdbcType;
+    }
 }

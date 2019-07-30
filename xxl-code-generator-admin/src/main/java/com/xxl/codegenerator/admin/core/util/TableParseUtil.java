@@ -7,10 +7,7 @@ import com.xxl.codegenerator.admin.core.model.FieldInfo;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,22 +108,26 @@ public class TableParseUtil {
 
                     // field class
                     columnLine = columnLine.substring(columnLine.indexOf("`")+1).trim();	// int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-                    String fieldClass = Object.class.getSimpleName();
+                    Class fieldClass = Object.class;
+                    String jdbcTypeName = "";
                     if (columnLine.startsWith("int") || columnLine.startsWith("tinyint") || columnLine.startsWith("smallint")) {
-                        fieldClass = Integer.TYPE.getSimpleName();
+                        fieldClass = Integer.class;
                     } else if (columnLine.startsWith("bigint")) {
-                        fieldClass = Long.TYPE.getSimpleName();
+                        fieldClass = Long.class;
                     } else if (columnLine.startsWith("float")) {
-                        fieldClass = Float.TYPE.getSimpleName();
+                        fieldClass = Float.class;
                     } else if (columnLine.startsWith("double")) {
-                        fieldClass = Double.TYPE.getSimpleName();
+                        fieldClass = Double.class;
                     } else if (columnLine.startsWith("datetime") || columnLine.startsWith("timestamp")) {
-                        fieldClass = Date.class.getSimpleName();
+                        fieldClass = Date.class;
                     } else if (columnLine.startsWith("varchar") || columnLine.startsWith("text") || columnLine.startsWith("char")) {
-                        fieldClass = String.class.getSimpleName();
+                        fieldClass = String.class;
                     } else if (columnLine.startsWith("decimal")) {
-                        fieldClass = BigDecimal.class.getSimpleName();
+                        fieldClass = BigDecimal.class;
                     }
+
+                    jdbcTypeName = columnLine.substring(0, columnLine.indexOf("(") >=0 ? columnLine.indexOf("(") : columnLine.length()).toUpperCase();
+                    jdbcTypeName = jdbcTypeName.substring(0,jdbcTypeName.indexOf(" ") >=0 ? jdbcTypeName.indexOf(" ") : jdbcTypeName.length()).toUpperCase();
 
                     // field comment
                     String fieldComment = "";
@@ -141,9 +142,9 @@ public class TableParseUtil {
                     FieldInfo fieldInfo = new FieldInfo();
                     fieldInfo.setColumnName(columnName);
                     fieldInfo.setFieldName(fieldName);
-                    fieldInfo.setFieldClass(fieldClass);
+                    fieldInfo.setFieldClass(fieldClass.getSimpleName());
                     fieldInfo.setFieldComment(fieldComment);
-
+                    fieldInfo.setFieldJdbcType(jdbcTypeName);
                     fieldList.add(fieldInfo);
                 }
             }

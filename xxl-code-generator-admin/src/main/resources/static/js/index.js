@@ -1,9 +1,19 @@
-$(function () {
+/**
+ * 初始化 table sql
+ */
+var tableSqlIDE;
+/**
+ * 初始化 code area
+ */
 
-    /**
-     * 初始化 table sql
-     */
-    var tableSqlIDE;
+var controller_ide;
+var service_ide;
+var service_impl_ide;
+var dao_ide;
+var mybatis_ide;
+var model_ide;
+
+$(function () {
     function initTableSql() {
         tableSqlIDE = CodeMirror.fromTextArea(document.getElementById("tableSql"), {
             lineNumbers: true,
@@ -18,16 +28,7 @@ $(function () {
     }
     initTableSql();
 
-    /**
-     * 初始化 code area
-     */
 
-    var controller_ide;
-    var service_ide;
-    var service_impl_ide;
-    var dao_ide;
-    var mybatis_ide;
-    var model_ide;
     function initCodeArea(){
 
         // controller_ide
@@ -103,56 +104,60 @@ $(function () {
 
     initCodeArea();
 
-    /**
-     * 生成代码
-     */
-    $('#codeGenerate').click(function () {
-
-        var tableSql = tableSqlIDE.getValue();
-
-        $.ajax({
-            type : 'POST',
-            url : base_url + "/codeGenerate",
-            data : {
-                "tableSql" : tableSql
-            },
-            dataType : "json",
-            success : function(data){
-                if (data.code == 200) {
-                    layer.open({
-                        icon: '1',
-                        content: "代码生成成功" ,
-                        end: function(layero, index){
-
-                            controller_ide.setValue(data.data.controller_code);
-                            controller_ide.setSize('auto','auto');
-
-                            service_ide.setValue(data.data.service_code);
-                            service_ide.setSize('auto','auto');
-
-                            service_impl_ide.setValue(data.data.service_impl_code);
-                            service_impl_ide.setSize('auto','auto');
-
-                            dao_ide.setValue(data.data.dao_code);
-                            dao_ide.setSize('auto','auto');
-
-                            mybatis_ide.setValue(data.data.mybatis_code);
-                            mybatis_ide.setSize('auto','auto');
-
-                            model_ide.setValue(data.data.model_code);
-                            model_ide.setSize('auto','auto');
-
-                        }
-                    });
-                } else {
-                    layer.open({
-                        icon: '2',
-                        content: (data.msg||'代码生成失败')
-                    });
-                }
-            }
-        });
-
-    });
-
 });
+
+/**
+ * 生成代码
+ */
+function codeGenerateFunc(type) {
+
+    var tableSql = tableSqlIDE.getValue();
+    var codeGenerateUrl;
+    if (type == 1) {
+        codeGenerateUrl = base_url + "/codeGenerate";
+    } else {
+        codeGenerateUrl = base_url + "/codeGenerateTk";
+    }
+    $.ajax({
+        type: 'POST',
+        url: codeGenerateUrl,
+        data: {
+            "tableSql": tableSql
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                layer.open({
+                    icon: '1',
+                    content: "代码生成成功",
+                    end: function (layero, index) {
+
+                        controller_ide.setValue(data.data.controller_code);
+                        controller_ide.setSize('auto', 'auto');
+
+                        service_ide.setValue(data.data.service_code);
+                        service_ide.setSize('auto', 'auto');
+
+                        service_impl_ide.setValue(data.data.service_impl_code);
+                        service_impl_ide.setSize('auto', 'auto');
+
+                        dao_ide.setValue(data.data.dao_code);
+                        dao_ide.setSize('auto', 'auto');
+
+                        mybatis_ide.setValue(data.data.mybatis_code);
+                        mybatis_ide.setSize('auto', 'auto');
+
+                        model_ide.setValue(data.data.model_code);
+                        model_ide.setSize('auto', 'auto');
+
+                    }
+                });
+            } else {
+                layer.open({
+                    icon: '2',
+                    content: (data.msg || '代码生成失败')
+                });
+            }
+        }
+    });
+}

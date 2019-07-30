@@ -79,4 +79,53 @@ public class IndexController {
 
     }
 
+    /**
+     * 生成tk.mapper模板代码
+     * @param tableSql
+     * @return
+     */
+    @RequestMapping("/codeGenerateTk")
+    @ResponseBody
+    public ReturnT<Map<String, String>> codeGenerateTk(String tableSql) {
+
+        try {
+
+            if (StringUtils.isBlank(tableSql)) {
+                return new ReturnT<Map<String, String>>(ReturnT.FAIL_CODE, "表结构信息不可为空");
+            }
+
+            // parse table
+            ClassInfo classInfo = CodeGeneratorTool.processTableIntoClassInfo(tableSql);
+
+            // code genarete
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("classInfo", classInfo);
+
+            // result
+            Map<String, String> result = new HashMap<String, String>();
+
+            result.put("controller_code", freemarkerTool.processString("xxl-code-generator/controller.ftl", params));
+            result.put("service_code", freemarkerTool.processString("xxl-code-generator/service.ftl", params));
+            result.put("service_impl_code", freemarkerTool.processString("xxl-code-generator/service_impl.ftl", params));
+
+            result.put("dao_code", freemarkerTool.processString("xxl-code-generator/tk/tkMapper.ftl", params));
+            result.put("mybatis_code", freemarkerTool.processString("xxl-code-generator/tk/tkMybatis.ftl", params));
+            result.put("model_code", freemarkerTool.processString("xxl-code-generator/model.ftl", params));
+
+            // 计算,生成代码行数
+            int lineNum = 0;
+            for (Map.Entry<String, String> item: result.entrySet()) {
+                if (item.getValue() != null) {
+                    lineNum += StringUtils.countMatches(item.getValue(), "\n");
+                }
+            }
+            logger.info("生成代码行数：{}", lineNum);
+
+            return new ReturnT<Map<String, String>>(result);
+        } catch (IOException | TemplateException e) {
+            logger.error(e.getMessage(), e);
+            return new ReturnT<Map<String, String>>(ReturnT.FAIL_CODE, "表结构解析失败");
+        }
+
+    }
 }
